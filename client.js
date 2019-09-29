@@ -6,8 +6,10 @@ const fileName = process.argv[2];
 
 const chunks = [];
 client.connect(PORT, IP, function() {
+  let i = 0;
   console.log('connected to server!');
   client.on('data', data => {
+
     let arrByte = Int8Array.from(data);
     const command = arrByte[arrByte.length - 1] + '' + arrByte[arrByte.length - 2];
     if (command === '98-98') {
@@ -16,6 +18,7 @@ client.connect(PORT, IP, function() {
       console.log(data.toString().split('.')[0]);
     } else {
       chunks.push(data);
+      console.log('Chunks: >', chunks.length);
       if (command === '99-99') {
         saveFile();
       }
@@ -23,7 +26,6 @@ client.connect(PORT, IP, function() {
   });
   client.write("file >>" + fileName);
 });
-//let fileName = 'filepdf.pdf';
 
 const saveFile = () => {
   const file = Buffer.concat(chunks);
